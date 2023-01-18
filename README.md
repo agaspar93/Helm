@@ -6,7 +6,7 @@ Helm must be installed to use the charts. Please refer to Helm’s documentation
 Once Helm has been set up correctly, add the repo as follows:
 
 ```
-helm repo add codebuds https://denniscodebuds.github.io/helm-charts
+helm repo add codebuds https://github.com/agaspar93/Helm
 ```
 
 If you had already added this repo earlier, run `helm repo update` to retrieve the latest versions of the packages. You can then run `helm search repo codebuds` to see the charts.
