@@ -1,5 +1,0 @@
-Bonjour il y a des jobs :
-{{- range $job := .Values.jobs}}
-Bonjour je suis {{$job.name}} avec {{ sub $job.limit 1}} décimaux
-{{- end}}
-{{ include "backoffLimit" . }}
