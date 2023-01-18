@@ -44,7 +44,7 @@ spec:
             - containerPort: {{.Values.MariaDB.service.port}}
               name: {{.Values.MariaDB.service.name}}
           volumeMounts:
-            - name: {{.Values.MariaDB.volumeMount.name}}
+            - name: {{.Values.MariaDB.volumes.name}}
               mountPath: {{.Values.MariaDB.volumeMount.mountPath}}
  
       dnsPolicy: ClusterFirst
@@ -55,7 +55,7 @@ spec:
       volumes:
         - name: {{.Values.MariaDB.volumes.name}}
           persistentVolumeClaim:
-            claimName: {{.Values.MariaDB.volumes.clainName}}
+            claimName: {{.Values.MariaDB.volumes.claimName}}
  
 ---
 apiVersion: v1
