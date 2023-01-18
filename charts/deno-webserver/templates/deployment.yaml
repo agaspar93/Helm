@@ -107,3 +107,5 @@ spec:
     - port: {{.Values.ServeurWeb.service.port}}
   selector:
     app: {{.Values.ServeurWeb.service.name}}
+
+    
