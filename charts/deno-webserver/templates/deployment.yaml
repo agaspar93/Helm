@@ -7,7 +7,7 @@ metadata:
   generation: 1
   labels:
     app: deno-webserver
-  name: deno-webserver
+  name: {{.Release.Name}}deno-webserver
   namespace: default
 spec:
   progressDeadlineSeconds: 600
@@ -36,16 +36,16 @@ spec:
         terminationMessagePolicy: File
         volumeMounts:
           - mountPath: /srv/app/pvc
-            name: {{ .Values.PVC.volumeName}}
+            name: {{.Release.Name}}{{ .Values.PVC.volumeName}}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      schedulerName: default-scheduler
+      schedulerName: {{.Release.Name}}default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: {{ .Values.PVC.volumeName}}
+        - name: {{.Release.Name}}{{ .Values.PVC.volumeName}}
           persistentVolumeClaim:
-              claimName: {{ .Values.PVC.volumeName}}
+              claimName: {{.Release.Name}}{{ .Values.PVC.volumeName}}
 status:
   availableReplicas: 1
   conditions:
@@ -71,7 +71,7 @@ status:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-    name: {{ .Values.PV.name}}
+    name: {{.Release.Name}}{{ .Values.PV.name}}
 spec:
     accessModes:
         - ReadWriteOnce
@@ -87,7 +87,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-    name: {{ .Values.PVC.name}}
+    name: {{.Release.Name}}{{ .Values.PVC.name}}
     namespace: default
 spec:
     accessModes:
@@ -100,7 +100,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{.Values.ServeurWeb.service.name}}
+  name: {{.Release.Name}}{{.Values.ServeurWeb.service.name}}
 spec:
   type: {{.Values.ServeurWeb.service.type}}
   ports:
@@ -108,4 +108,3 @@ spec:
   selector:
     app: {{.Values.ServeurWeb.service.name}}
 
-    
