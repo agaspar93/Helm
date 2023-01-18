@@ -1,0 +1,44 @@
+PV:
+    name: deno-server
+    size: 3Gi
+    path: /data/deno-server/
+    persistentVolumeReclaimPolicy: Ratain
+  
+PVC:
+    name: logs
+    size: 1Gi
+    volumeName: logs
+
+ServeurWeb:
+   service:
+      type: NodePort
+      port: 8080
+      name: deno-webserver
+   image:
+     repository: codebuds/deno-webserver
+     pullPolicy: IfNotPresent
+     tag: 1.3.1
+#   replicaCount:
+
+MariaDB:
+   password: asecret
+   database: logs
+   image:
+     repository: mariadb
+     pullPolicy: Always
+     tag: 10.7
+   volumeMount:
+     name: maria-db
+     mountPath: /var/lib/mysql
+   volumes:
+     name: maria-db
+     claimName: maria-db
+   service:
+     port: 3306
+     name: mysql
+
+mariadbDeploy:
+    name: maria-db
+    app: maria-db
+    volume-name: maria-db
+    volume-ClaimName: maria-db
