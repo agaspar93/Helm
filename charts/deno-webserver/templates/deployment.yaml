@@ -40,6 +40,9 @@ spec:
       - image: {{ .Values.ServeurWeb.image.repository}}:{{ .Values.ServeurWeb.image.tag}}
         imagePullPolicy: {{ .Values.ServeurWeb.image.pullPolicy}}
         name: deno-webserver
+        env:
+            -   name: MARIADB_HOST
+                value: {{.Release.Name}}mariadb
         ports:
           - name: http
             containerPort: 8080
@@ -100,15 +103,5 @@ spec:
   ports:
     - port: {{.Values.ServeurWeb.service.port}}
   selector:
-    app: {{.Values.ServeurWeb.service.name}}
+    app: {{.Release.Name}}{{.Values.ServeurWeb.service.name}}
 
---- 
-apiVersion: v1
-kind: Pod 
-metadata:
-  name: ubuntu
-spec:
-  containers:
-    - image: ubuntu
-      name: ntm
-      command: ['sleep','infinity']
