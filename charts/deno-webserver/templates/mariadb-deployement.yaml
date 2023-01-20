@@ -23,6 +23,16 @@ spec:
           imagePullPolicy: {{.Values.MariaDB.image.pullPolicy}}
           name: {{.Release.Name}}{{.Values.mariadbDeploy.name}}
           resources: {}
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #       - sh
+          #       - -c
+          #       - 'mysqladmin ping'
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 30
+          #   successThreshold: 1
+          #   failureThreshold: 3
           env:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -52,6 +62,8 @@ spec:
             claimName: {{.Release.Name}}{{.Values.MariaDB.volumes.claimName}}
  
 ---
+######### PV #########
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -67,6 +79,8 @@ spec:
     path: /data/maria-db/
  
 ---
+######### PVC #########
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

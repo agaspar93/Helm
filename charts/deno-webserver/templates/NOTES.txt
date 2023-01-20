@@ -1,1 +1,4 @@
-Bonjour il y a des jobs :
+Bonjour,
+Pour pouvoir lancer le programme il faut lancer la commande suivante :
+
+minikube service deno-webserver
