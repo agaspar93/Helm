@@ -1,15 +1,12 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  annotations:
-    deployment.kubernetes.io/revision: "3"
   labels:
     app: maria-db
   name: {{.Release.Name}}maria-db
   namespace: default
 spec:
   replicas: 1
-  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: {{.Release.Name}}{{ .Values.mariadbDeploy.name }}
@@ -22,7 +19,6 @@ spec:
         - image: {{.Values.MariaDB.image.repository}}:{{.Values.MariaDB.image.tag}}
           imagePullPolicy: {{.Values.MariaDB.image.pullPolicy}}
           name: {{.Release.Name}}{{.Values.mariadbDeploy.name}}
-          resources: {}
           # readinessProbe:
           #   exec:
           #     command:
@@ -37,29 +33,28 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mariadb-secret
+                  name: {{.Release.Name}}mariadb-secret
                   key: password
             - name: MYSQL_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: mariadb-secret
+                  name: {{.Release.Name}}mariadb-secret
                   key: db
           ports:
             - containerPort: {{.Values.MariaDB.service.port}}
               name: {{.Release.Name}}{{.Values.MariaDB.service.name}}
           volumeMounts:
-            - name: {{.Release.Name}}{{.Values.MariaDB.volumes.name}}
+            - name: {{.Release.Name}}{{.Values.MariaDB.volumes.claimName}}
               mountPath: {{.Values.MariaDB.volumeMount.mountPath}}
- 
-      dnsPolicy: ClusterFirst
-      restartPolicy: Always
-      schedulerName: {{.Release.Name}}default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
-      volumes:
-        - name: {{.Release.Name}}{{.Values.MariaDB.volumes.name}}
-          persistentVolumeClaim:
-            claimName: {{.Release.Name}}{{.Values.MariaDB.volumes.claimName}}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{.Release.Name}}{{.Values.MariaDB.volumes.claimName}}
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: ""
+        resources:
+          requests:
+            storage: 1Gi
  
 ---
 ######### PV #########
@@ -72,34 +67,21 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: standard
+  storageClassName: ""
   capacity:
     storage: 10Gi
   hostPath:
     path: /data/maria-db/
- 
----
-######### PVC #########
 
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{.Release.Name}}maria-db
-  namespace: default
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
- 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{.Release.Name}}maria-db
+  name: {{.Release.Name}}mariadb
 spec:
   ports:
     - port: {{.Values.MariaDB.service.port}}
+      targetPort: {{.Values.MariaDB.service.port}}
+      protocol: TCP
   selector:
-    app: maria-db
+    app: {{.Release.Name}}{{ .Values.mariadbDeploy.name }}

@@ -1,4 +1,4 @@
 Bonjour,
 Pour pouvoir lancer le programme il faut lancer la commande suivante :
 
-minikube service deno-webserver
+minikube service {{.Release.Name}}deno-webserver
