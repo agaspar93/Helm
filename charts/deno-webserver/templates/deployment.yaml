@@ -26,16 +26,11 @@ spec:
       labels:
         app: deno-webserver
     spec:
-      #securityContext:
-      #  runAsUser: 1000
-      #  runAsGroup: 3000
 ######### InitContainers qui vérifie l'état de la base de données #########
       initContainers:
         - name: check-mariadb
           image: busybox:1.28
           command: ['sh','-c', "until nc {{.Release.Name}}mariadb -z 3306; do echo feur;done"]
-######### InitContainers qui applique les droits aux PVC #########
-
       containers:
       - image: {{ .Values.ServeurWeb.image.repository}}:{{ .Values.ServeurWeb.image.tag}}
         imagePullPolicy: {{ .Values.ServeurWeb.image.pullPolicy}}
